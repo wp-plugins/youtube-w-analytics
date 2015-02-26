@@ -671,7 +671,7 @@ function cleanTime(playerid){
 			$returnHtml .= '						if ( cleanTime("'. $videonum. '") ==  0) {'. "\n";
 			$returnHtml .= '							'. $uatag. "('send', 'event', '". $videotitle. "', 'started','vid: ".$videoid."');" . "\n";
 			$returnHtml .= '						} else {'. "\n";
-			$returnHtml .= '							'. $uatag. "('send', 'event', '". $videotitle. "', 'played','vid: ".$videoid."');" . "\n";
+			$returnHtml .= '							'. $uatag. "('send', 'event', '". $videotitle. "', 'played','vid: ".$videoid." time: ' + cleanTime('". $videonum. "'));" . "\n";
 			$returnHtml .= '						} '. "\n";
 			$returnHtml .= '                     break;' . "\n";
 			$returnHtml .= '                 case YT.PlayerState.ENDED:' . "\n";
