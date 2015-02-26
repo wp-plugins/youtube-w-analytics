@@ -14,22 +14,18 @@ if (!class_exists('youtube_w_analytics')) :
 		var $videos = array();
 		var $variables = array();
 		var $video_table_name = "";
-
 		//var $self = array();
 		
 		function __construct($file = __FILE__) {
 			global $wpdb;
-
 			//place to set initial settings for plugin
 			$this->sessions_needed = false;	
 			$this->access_level = "manage_options";
-
 			$this->variables['video_table_name'] ='youtube_w_analytics';
 			
 			$this->video_table_name = $wpdb->prefix . 'youtube_w_analytics';
 			
 			define('YTVTABLE',$this->video_table_name);
-
 			// https://developers.google.com/youtube/player_parameters
 			// https://developers.google.com/youtube/js_api_reference
 			$this->pvparams = array ( 
@@ -59,20 +55,15 @@ if (!class_exists('youtube_w_analytics')) :
 			
 			register_activation_hook($file, array(&$this,'activate'));
 			register_deactivation_hook($file,array(&$this,'deactivate'));
-
 			add_action('init', array(&$this, 'init'));
 			
 			add_action('admin_init', array(&$this, 'admin_init'));
 			add_action('admin_menu', array(&$this, 'add_menu'));
 			add_shortcode('ytwa_video',array(&$this, 'display_video') );
-
 		}
-
 		function activate() {
 			$youtube_w_analytics = new youtube_w_analytics();
-
 			$tableName = $youtube_w_analytics->video_table_name;
-
 			$tableSql = "
 						`id` int(11) NOT NULL AUTO_INCREMENT,
 					 	`youtubeid` varchar(64) NOT NULL,
@@ -80,7 +71,6 @@ if (!class_exists('youtube_w_analytics')) :
 					 	`datetimeadded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 					 	UNIQUE id ( `id` )
 						";
-
 			self::create_table($tableName,$tableSql);
 			
 			update_option('ytwa_options', array('objectname'=>'ga', 'width'=> '500', 'height'=> '350') );
@@ -89,7 +79,6 @@ if (!class_exists('youtube_w_analytics')) :
 		
 		function deactivate() {
 			$youtube_w_analytics = new youtube_w_analytics();
-
 			$tableName = $youtube_w_analytics->video_table_name;
 			
 			self::drop_table($tableName);
@@ -120,12 +109,9 @@ if (!class_exists('youtube_w_analytics')) :
 			
 			add_action( 'wp_ajax_updatevideo', array(&$this, 'tywa_callback') );
 			add_action( 'wp_ajax_deletevideo', array(&$this, 'tywa_callback') );
-
 			
 		}
-
 		function tywa_callback() {
-
 				$action = strip_tags( $_POST['action'] );
 				
 				switch ($action) {
@@ -182,27 +168,20 @@ if (!class_exists('youtube_w_analytics')) :
 			
 				wp_die(); // this is required to terminate immediately and return a proper response
 			}
-
 		
 		function init_settings() {
 			//customized init settings for entire program backend and front end
 			wp_enqueue_script('jquery');
-
 			add_action('wp_head', array(&$this, 'header') );
 			add_action('wp_footer', array(&$this, 'footer') );
 		}
-
 		function footer() {
 			echo "<!--Doing Footer-->\n";
 		}
-
 		function header() {
 			echo "<!--Doing Header-->\n";
-
 			$headYtwa = new youtube_w_analytics();
-
 			$headYtwa->display_header_code();
-
 		}
 		
 		function update_options() {
@@ -271,30 +250,22 @@ if (!class_exists('youtube_w_analytics')) :
 		function settings_page() {
 			$this->check_user();
 			global $wpdb;
-
 			if (isset($_POST['update_settings']) && check_admin_referer( 'ytwa_settings' ) ) {
-
 				$tmpPost = $_POST;
 				$newytwa = $tmpPost['ytwa'];
 				update_option('ytwa_options',$newytwa);
-
 				$this->add_error_msg("Updated Options.");
 			} else if (isset($_POST['update_settings']) ) {
 				$this->add_error_msg("Error Updating Options.");
-
 			}
-
-
 			$ytwa = get_option('ytwa_options');
 			
 			?>
-
 		    <div class="wrapper">
 			<?php			
 			//$this->add_error_msg("Test Error Message");
 			echo "<h1>YouTube with Analytics Settings Page</h2>";
 			$this->disp_errors();
-
 			?>
 			<form method="post">
             <style>
@@ -314,7 +285,6 @@ if (!class_exists('youtube_w_analytics')) :
 <span class="indent">&nbsp;</span>(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),<br />
 <span class="indent">&nbsp;</span>m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)<br />
 <span class="indent">&nbsp;</span>})(window,document,'script','//www.google-analytics.com/analytics.js','ga');<br /><br />
-
 <span class="indent">&nbsp;</span><strong class="objectname">ga</strong>('create', 'UA-XXXXXXXX-X', 'auto');<br />
 <span class="indent">&nbsp;</span><strong class="objectname">ga</strong>('require', 'displayfeatures');<br />
 <span class="indent">&nbsp;</span><strong class="objectname">ga</strong>('send', 'pageview');<br />
@@ -327,18 +297,12 @@ if (!class_exists('youtube_w_analytics')) :
 				Default height: <input type="text" name="ytwa[height]" value="<?php echo $ytwa['height']; ?>" /><br>
 				<input type="submit" name="update_settings" value="Update Settings">
 			</form>
-
 			</div>
-
 			<?php
-
-
 		}
-
 		function videos_page() {
 			$this->check_user();
 			global $wpdb;
-
 			$vidTableName = $this->video_table_name;
 			
 			$variables == array();
@@ -408,7 +372,6 @@ if (!class_exists('youtube_w_analytics')) :
 			echo "<h1>YouTube with Analytics Tracking Videos Page</h2>";
 			$this->disp_errors();
 			$this->add_video_form($variables);
-
 			$videos = $wpdb->get_results( 'SELECT * FROM ' . $vidTableName . ' ORDER BY id ASC', ARRAY_A);
 			$vidcount = $wpdb->num_rows;
 			if ($vidcount > 0) {
@@ -441,12 +404,9 @@ if (!class_exists('youtube_w_analytics')) :
 								};
 								
 								jQuery.post(ajaxurl,tmpData, function (response) {
-
 											console.log(response);
-
 											if (response == "true") {
 												//hide both rows for video
-
 												jQuery("#ytvid_" + vidid).hide();
 												jQuery("#edit_ytvid_" + vidid ).hide();
 												jQuery('#vuerror').multiline("Video has been deleted.\n");
@@ -470,7 +430,6 @@ if (!class_exists('youtube_w_analytics')) :
 							var ytmodbrand = jQuery('#ytmodbrand_'+vidid).val();
 							var ytrel = jQuery('#ytrel_'+vidid).val();
 							var yttheme = jQuery('#yttheme_'+vidid).val();
-
 							var errormsg = "";
 							jQuery('#vuerror').multiline("\n");
 							if (ytvtitle.length == 0) errormsg += "Please enter in a unique video title for tracking.\n";
@@ -503,11 +462,8 @@ if (!class_exists('youtube_w_analytics')) :
 											}
 									
 								});
-
 							}
 						});
-
-
 					});
 					</script>
 					<div id="vuerror" style="font-weight:bold; color:#ff0000;">&nbsp;</div>
@@ -601,7 +557,6 @@ if (!class_exists('youtube_w_analytics')) :
 			/*		Sample $variableSql data
 						
 					  Automatically adds database prefix to this database table
-
 					  `id` int(11) NOT NULL AUTO_INCREMENT,
 					  `varcharexample` varchar(64) NOT NULL,
 					  `textexample` text NOT NULL,
@@ -626,7 +581,6 @@ if (!class_exists('youtube_w_analytics')) :
 				return true;			
 			return false;	
 		}
-
 		function disp_errors() {
 			$displayText = '';
 			if (count($this->error) > 0 ) {
@@ -645,24 +599,25 @@ if (!class_exists('youtube_w_analytics')) :
 		
 		function display_header_code() {
 			global $wpdb;
-
 			$videosSql = "SELECT * FROM " . $this->video_table_name;
-
 			$videos = $wpdb->get_results($videosSql, ARRAY_A);
-
 			?>
 <script>
-
 	var tag = document.createElement('script');
 	tag.src = "http://www.youtube.com/player_api";
 	var firstScriptTag = document.getElementsByTagName('script')[0];
 	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 <?php foreach ($videos as $video) { ?>
 	var player<?php echo $video['id']; ?>;
 	var lastAction<?php echo $video['id']; ?> = '';
 	var onPlayerStateChange<?php echo $video['id']; ?>;
 <?php }	?>
+
+function cleanTime(playerid){
+	var videoid = 'player' + playerid;
+    return Math.round(eval(videoid).getCurrentTime())
+};
+
 	function onYouTubePlayerAPIReady() {
 <?php 	foreach ($videos as $video) { 
 					$pvparams = unserialize($video['videovariables']);
@@ -678,7 +633,6 @@ if (!class_exists('youtube_w_analytics')) :
 		videoId: '<?php echo $video['youtubeid']; ?>',
 		events: {
 			'onStateChange': onPlayerStateChange<?php echo $video['id']; ?>
-
 		}
 	});
 					 <?php
@@ -694,11 +648,8 @@ if (!class_exists('youtube_w_analytics')) :
 				array(
 					'vid' => '',
 					), $atts, 'ytwa_video');
-
 			$ytwa = new youtube_w_analytics();
-
 			$videoSql = "SELECT * FROM " . $ytwa->video_table_name . " WHERE id=%d";
-
 			$video = $wpdb->get_results($wpdb->prepare($videoSql, $a['vid']), ARRAY_A);
 //			echo "<pre>". print_r($video,true) . "</pre>";
 //			return;
@@ -707,29 +658,33 @@ if (!class_exists('youtube_w_analytics')) :
 			$videoVars = unserialize($video[0]['videovariables']);
 			
 			$ytwa_options = get_option('ytwa_options');
-
-			return $ytwa->display_player_code($videoId,$videoVars['ytvtitle'], $ytwa_options['objectname']);
-
+			return $ytwa->display_player_code($videoId,$videoVars['ytvtitle'], $ytwa_options['objectname'],$videoVars['ytvid']);
 		}
-		function display_player_code($videonum, $videotitle, $uatag) {
+		function display_player_code($videonum, $videotitle, $uatag, $videoid) {
 			//$videotitle = str_replace(" ", "_", $videotitle);
 			$returnHtml = '';
 			$returnHtml .= '<div id="player'.$videonum. '"></div>' . "\n";
 			$returnHtml .= '     <script>' . "\n";
-
 			$returnHtml .= '		function onPlayerStateChange'. $videonum. '(event) {' . "\n";
 			$returnHtml .= '            switch (event.data) {' . "\n";
 			$returnHtml .= '                case YT.PlayerState.PLAYING:' . "\n";
-			$returnHtml .= '						'. $uatag. "('send', 'event', '". $videotitle. "', 'started');" . "\n";
+			$returnHtml .= '						if ( cleanTime("'. $videonum. '") ==  0) {'. "\n";
+			$returnHtml .= '							'. $uatag. "('send', 'event', '". $videotitle. "', 'started','vid: ".$videoid."');" . "\n";
+			$returnHtml .= '						} else {'. "\n";
+			$returnHtml .= '							'. $uatag. "('send', 'event', '". $videotitle. "', 'played','vid: ".$videoid."');" . "\n";
+			$returnHtml .= '						} '. "\n";
 			$returnHtml .= '                     break;' . "\n";
 			$returnHtml .= '                 case YT.PlayerState.ENDED:' . "\n";
-			$returnHtml .= '						'. $uatag. "('send', 'event', '".$videotitle. "', 'completed');" . "\n";
+			$returnHtml .= '                		' . "\n";
+			$returnHtml .= '						'. $uatag. "('send', 'event', '".$videotitle. "', 'completed','vid: ".$videoid."');" . "\n";
 			$returnHtml .= '                     break;' . "\n";
 			$returnHtml .= '                 case YT.PlayerState.PAUSED:' . "\n";
-			$returnHtml .= '                     if (lastAction' . $videonum. " != 'paused') {" . "\n";
-			$returnHtml .= '						'. $uatag."('send', 'event', '" . $videotitle. "', 'paused');" . "\n";
-			$returnHtml .= '                     } else {' . "\n";
-			$returnHtml .= '                         lastAction'. $videonum ." = 'paused';" . "\n";
+			$returnHtml .= '                 	if (player'. $videonum. '.getDuration() - player'. $videonum. '.getCurrentTime() != 0) {' . "\n";
+			$returnHtml .= '                    	if (lastAction' . $videonum. " != 'paused') {" . "\n";
+			$returnHtml .= '							'. $uatag."('send', 'event', '" . $videotitle. "', 'paused', 'vid: ".$videoid." time: ' + cleanTime('". $videonum. "') );" . "\n";
+			$returnHtml .= '                     	} else {' . "\n";
+			$returnHtml .= '                         	lastAction'. $videonum ." = 'paused';" . "\n";
+			$returnHtml .= '                     	}' . "\n";
 			$returnHtml .= '                     }' . "\n";
 			$returnHtml .= '                     break;' . "\n";
 			$returnHtml .= '             }' . "\n";
@@ -738,7 +693,6 @@ if (!class_exists('youtube_w_analytics')) :
             
             return $returnHtml;
 		}
-
 		function ytp_help_page() {
 			$this->check_user();
 			//if passed then display following code to user
@@ -892,6 +846,4 @@ if (!class_exists('youtube_w_analytics')) :
 		
 		
 	}
-
-
 endif;

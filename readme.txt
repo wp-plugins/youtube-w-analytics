@@ -4,7 +4,7 @@ Donate link: http://billiardgreg.com
 Tags: youtube, google analytics, universal analytics, video, videos, embed
 Requires at least: 4.1
 Tested up to: 4.1
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,7 @@ YouTube video embed system that adds tracking for Universal Analytics Events to 
 1. Go to settings page and modify the Universal Analytics Object name.
 1. Go to the videos page and add your video that you want to embed with the settings you want.
 1. Enter in shortcode into page or post.
+1. Works with multiple videos on the same page.
 
 == Frequently Asked Questions ==
 
@@ -33,6 +34,10 @@ Email me at <greg@wpcms.ninja> and ask away.
 1. No Screenshot.
 
 == Changelog ==
+
+= 1.2 =
+* Fixed pause getting triggered on video completion.
+* Also added time stamp and YouTube Video ID on pause to event label
 
 = 1.1 =
 * Initial release of plugin. 
